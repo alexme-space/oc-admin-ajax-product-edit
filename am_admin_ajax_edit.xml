@@ -32,8 +32,9 @@
 							status: 'td:nth-of-type(9)'
 						};
 
-						// Bind events
 						var that = this;
+
+						// Bind events
 						$row.find(settings.name).click(function(){
 							that.changeNameDlg();
 						});
@@ -44,7 +45,11 @@
 							that.changePriceDlg();
 						});
 						$row.find(settings.status).click(function () {
-							that.changeStatusDlg();
+							if ($(this).find("input").length > 0) {
+								closeInput(settings.status);
+							} else {
+								that.changeStatusDlg();
+							}
 						});
 
 						var showInput = function (container, saveCallback) {
@@ -121,7 +126,30 @@
 						};
 
 						this.changeStatusDlg = function () {
+							var $container = $row.find(settings.status);
+							if ($container.find('.live-edit').length > 0) {
+								return;
+							}
 
+							var oldContent = $container.text();
+							var $inputTemplate = $('<input type="checkbox" class="live-edit"/>');
+							$inputTemplate.data('content', oldContent);
+
+							var onStatus = $('select[name="filter_status"] option[value="1"]').text();
+							var offStatus = $('select[name="filter_status"] option[value="0"]').text();
+							var currentStatus = (oldContent == onStatus) ? 'checked' : '';
+							$inputTemplate.prop('checked', currentStatus);
+							$container.html($inputTemplate);
+
+							$inputTemplate.click(function (e) {
+								e.stopPropagation();
+								if ($inputTemplate.prop("checked")) {
+									$inputTemplate.attr("value", onStatus);
+								} else {
+									$inputTemplate.attr("value", offStatus);
+								}
+								that.saveStatus(+$inputTemplate.prop("checked"));	// pass integer val
+							});
 						};
 
 						this.saveName = function (name) {
@@ -133,7 +161,9 @@
 						this.savePrice = function (price) {
 							saveData({price: price}, settings.price);
 						};
-						this.saveStatus = function (status) {};
+						this.saveStatus = function (status) {
+							saveData({status:status}, settings.status);
+						};
 
 					}
 
