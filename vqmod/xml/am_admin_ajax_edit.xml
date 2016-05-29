@@ -138,4 +138,20 @@
 			</add>
 		</operation>
 	</file>
+	<file name="admin/language/*/catalog/product.php">
+		<operation error="abort">
+			<search position="after"><![CDATA[$_['error_model']]]></search>
+			<add>
+			<![CDATA[
+
+			// Ajax edit
+			$_['error_no_product_id']   = 'Не предоставлен ID товара!';
+			$_['success_name_update']   = 'Название товара обновлено!';
+			$_['success_model_update']   = 'Модель обновлена!';
+			$_['success_price_update']  = 'Цена товара обновлена!';
+			$_['success_status_update'] = 'Статус товара обновлен!';
+			]]>
+			</add>
+		</operation>
+	</file>
 </modification>
